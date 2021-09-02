@@ -1,0 +1,3 @@
+flask-jwt-extended
+Flask-RESTful
+Flask-SQLAlchemy
