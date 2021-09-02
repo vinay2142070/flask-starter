@@ -2,7 +2,7 @@ from flask import Flask, jsonify
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
-
+import os
 
 from blacklist import BLACKLIST
 from resources.user import UserRegister, User, UserLogin, TokenRefresh, UserLogout
@@ -11,7 +11,7 @@ from resources.store import Store, StoreList
 from redis_util import jwt_redis_blocklist
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL",'sqlite:///data.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config["JWT_COOKIE_SECURE"] = False
