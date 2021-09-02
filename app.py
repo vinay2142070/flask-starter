@@ -102,5 +102,6 @@ api.add_resource(TokenRefresh, '/refresh')
 api.add_resource(UserLogout, '/logout')
 
 if __name__ == '__main__':
-   
+ #   from run import db
+  #  db.init_app(app)
     app.run(port=5000, debug=True)
