@@ -1,5 +1,7 @@
-flask-jwt-extended
+Flask
 Flask-RESTful
+Flask-JWT-Extended
 Flask-SQLAlchemy
-redis
 uwsgi
+psycopg2
+redis
