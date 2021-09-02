@@ -1,13 +1,13 @@
-#Flask Starter Project(with JWT,REDIS)
+# Flask Starter Project(with JWT,REDIS)
 
 
-##dependencies
+## dependencies
 Flask-Restful
 Flask-JWT-Extended
 Flask-SQLAlchemy
 redis
 
-##Implementation
+## Implementation
 project implemented using Flask-Restful
 Flask-JWT-Extended
 Flask-SQLAlchemy
