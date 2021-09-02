@@ -5,4 +5,4 @@ Flask-SQLAlchemy
 uwsgi
 psycopg2
 redis==3.5.3
-urlparse
+urlparser
