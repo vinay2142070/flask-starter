@@ -11,6 +11,7 @@ from datetime import timedelta
 from models.user import UserModel
 from blacklist import BLACKLIST
 from redis_util import jwt_redis_blocklist
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 _user_parser = reqparse.RequestParser()
@@ -33,7 +34,7 @@ class UserRegister(Resource):
         if UserModel.find_by_username(data['username']):
             return {"message": "A user with that username already exists"}, 400
 
-        user = UserModel(**data)
+        user = UserModel(data['username'],generate_password_hash(data['password']))
         user.save_to_db()
 
         return {"message": "User created successfully."}, 201
@@ -72,7 +73,7 @@ class UserLogin(Resource):
         user = UserModel.find_by_username(data['username'])
 
         # this is what the `authenticate()` function did in security.py
-        if user and safe_str_cmp(user.password, data['password']):
+        if user and safe_str_cmp(user.password, generate_password_hash(data['password'])):
             # identity= is what the identity() function did in security.py—now stored in the JWT
             
             access_token = create_access_token(identity=user.id, fresh=True,
