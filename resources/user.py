@@ -71,11 +71,12 @@ class UserLogin(Resource):
         data = _user_parser.parse_args()
 
         user = UserModel.find_by_username(data['username'])
-
+        password=data['password']
+       
         # this is what the `authenticate()` function did in security.py
-        if user and safe_str_cmp(user.password, generate_password_hash(data['password'])):
+        if user and check_password_hash(user.password, password):
             # identity= is what the identity() function did in security.py—now stored in the JWT
-            
+           
             access_token = create_access_token(identity=user.id, fresh=True,
                     additional_claims={"claim":"admin"} if user.id==2 else {"claim":"user"})  
             refresh_token = create_refresh_token(user.id)
