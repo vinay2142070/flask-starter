@@ -5,28 +5,61 @@ from datetime import timedelta
 import os
 
 from blacklist import BLACKLIST
-from resources.user import UserRegister, User, UserLogin, TokenRefresh, UserLogout
+from resources.user import (
+    UserRegister,
+    User,
+    UserLogin,
+    TokenRefresh,
+    UserLogout,
+    SetPassword,
+)
 from resources.item import Item, ItemList
 from resources.store import Store, StoreList
 from redis_util import jwt_redis_blocklist
+from ma import ma
+from marshmallow import ValidationError
+from resources.confirmation import Confirmation, ConfirmationByUser
+from dotenv import load_dotenv
+
+load_dotenv(".env", verbose=True)
+from flask_uploads import configure_uploads, patch_request_class
+from resources.image import ImageUpload, Image, Avatar, AvatarUpload
+from libs.image_helper import IMAGE_SET
+from flask_migrate import Migrate
+from db import db
+from resources.order import Order
+
+
+from oauth2 import oauth
+from resources.github_login import GithubLogin, GithubAuthorize
 
 app = Flask(__name__)
-uri = os.getenv("DATABASE_URL", "sqlite:///data.db")  # or other relevant config var
-if uri.startswith("postgres://"):
-    uri = uri.replace("postgres://", "postgresql://", 1)
-app.config["SQLALCHEMY_DATABASE_URI"] = uri
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["PROPAGATE_EXCEPTIONS"] = True
-app.config["JWT_COOKIE_SECURE"] = False
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=30)
-app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=10)
+
+
+# uri = os.getenv("DATABASE_URL", "sqlite:///data.db")  # or other relevant config var
+# if uri.startswith("postgres://"):
+#     uri = uri.replace("postgres://", "postgresql://", 1)
+# app.config["SQLALCHEMY_DATABASE_URI"] = uri
+# app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+# app.config["PROPAGATE_EXCEPTIONS"] = True
+# app.config["JWT_COOKIE_SECURE"] = False
+# app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=30)
+# app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=10)
 # app.config['JWT_BLACKLIST_ENABLED'] = True  # enable blacklist feature
 # app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']  # allow blacklisting for access and refresh tokens
-app.config["JWT_SECRET_KEY"] = "mysecretkey"
+# app.config["JWT_SECRET_KEY"] = os.environ.get("APP_SECRET")
+app.config.from_object("default_config")
+app.config.from_envvar("APPLICATION_SETTINGS")
+db.init_app(
+    app
+)  # moved outside from __name__==__main__ due to error faced for flask db migrate
 api = Api(app)
-
-
 jwt = JWTManager(app)
+migrate = Migrate(app, db)
+
+# flask uploads
+patch_request_class(app, 2 * 1024 * 1024)  # 10MB upload max
+configure_uploads(app, IMAGE_SET)
 
 """
 `claims` are data we choose to attach to each jwt payload
@@ -110,6 +143,11 @@ def revoked_token_callback(hdr, payload):
     )
 
 
+@app.errorhandler(ValidationError)
+def handle_marshmallow_excep(err):
+    return jsonify(err.messages), 400
+
+
 api.add_resource(Store, "/store/<string:name>")
 api.add_resource(StoreList, "/stores")
 api.add_resource(Item, "/item/<string:name>")
@@ -119,9 +157,28 @@ api.add_resource(User, "/user/<int:user_id>")
 api.add_resource(UserLogin, "/login")
 api.add_resource(TokenRefresh, "/refresh")
 api.add_resource(UserLogout, "/logout")
+api.add_resource(Confirmation, "/user_confirm/<string:confirmation_id>")
+api.add_resource(ConfirmationByUser, "/confirmation/user/<int:userid>")
+api.add_resource(ImageUpload, "/upload/image")
+api.add_resource(Image, "/image/<string:filename>")
+api.add_resource(AvatarUpload, "/upload/avatar")
+api.add_resource(Avatar, "/avatar/<int:user_id>")
+api.add_resource(GithubLogin, "/login/github")
+api.add_resource(
+    GithubAuthorize, "/login/github/authorized", endpoint="github.authorize"
+)
+api.add_resource(SetPassword, "/user/password")
+api.add_resource(Order, "/order")
+
+
+@app.before_first_request
+def create_tables():
+    db.create_all()
+
 
 if __name__ == "__main__":
-    from run import db
+    # from run import db
 
-    db.init_app(app)
-    app.run(port=5000, debug=True)
+    ma.init_app(app)
+    oauth.init_app(app)
+    app.run(port=5000)

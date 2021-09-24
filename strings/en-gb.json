@@ -1,0 +1,18 @@
+{
+    "BLANK_FIELD": "This field cannot be left blank!",
+    "NOT_FOUND": "Not found",
+    "EXPIRED": "Expired",
+    "ALREADY_CONFIRMED": "Email ID confirmed already",
+    "USER_NOT_FOUND": "User not found",
+    "RESEND_FAILED": "Resending of email failed",
+    "image_uploaded": "Image '{}' uploaded.",
+    "image_illegal_extension": "Extension '{}' is not allowed.",
+    "image_illegal_file_name": "Illegal filename '{}' requested.",
+    "image_not_found": "Image '{}' not found.",
+    "image_deleted": "Image '{}' deleted.",
+    "image_delete_failed": "Internal server error! Failed to delete image.",
+    "avatar_delete_failed": "Internal server error! Failed to delete avatar.",
+    "avatar_uploaded": "Avatar '{}' uploaded.",
+    "avatar_not_found": "Avatar not found.",
+    "password_updated": "password updated successfully"
+}

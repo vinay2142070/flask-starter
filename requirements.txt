@@ -5,3 +5,12 @@ Flask-SQLAlchemy
 uwsgi
 psycopg2
 redis==3.5.3
+Flask-Marshmallow
+marshmallow-sqlalchemy
+marshmallow
+python-dotenv
+flask-uploads
+flask-babel
+flask-migrate
+Flask-OAuthlib
+Stripe
