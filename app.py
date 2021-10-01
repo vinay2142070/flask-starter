@@ -22,7 +22,7 @@ from resources.confirmation import Confirmation, ConfirmationByUser
 from dotenv import load_dotenv
 
 load_dotenv(".env", verbose=True)
-from flask_uploads import configure_uploads, patch_request_class
+from flask_uploads import configure_uploads  # , patch_request_class
 from resources.image import ImageUpload, Image, Avatar, AvatarUpload
 from libs.image_helper import IMAGE_SET
 from flask_migrate import Migrate
@@ -58,7 +58,8 @@ jwt = JWTManager(app)
 migrate = Migrate(app, db)
 
 # flask uploads
-patch_request_class(app, 2 * 1024 * 1024)  # 10MB upload max
+# patch_request_class(app, 2 * 1024 * 1024)  # 10MB upload max
+# app.config["MAX_CONTENT_LENGTH"] = 1000
 configure_uploads(app, IMAGE_SET)
 
 """

@@ -1,0 +1,34 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+uwsgi = "*"
+redis = "==3.5.3"
+flask-marshmallow = "*"
+marshmallow-sqlalchemy = "*"
+marshmallow = "*"
+python-dotenv = "*"
+flask-babel = "*"
+stripe = "*"
+Flask = "*"
+Flask-RESTful = "*"
+Flask-JWT-Extended = "*"
+Flask-SQLAlchemy = "*"
+Flask-Migrate = "*"
+Flask-OAuthlib = "*"
+werkzeug = "*"
+flask-reuploaded = "*"
+pytest = "*"
+pytest-sugar = "*"
+pytest-flask = "*"
+
+[dev-packages]
+black = "*"
+
+[requires]
+python_version = "3.9"
+
+[pipenv]
+allow_prereleases = true

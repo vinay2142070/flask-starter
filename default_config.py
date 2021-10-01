@@ -14,3 +14,4 @@ JWT_REFRESH_TOKEN_EXPIRES = timedelta(
     minutes=int(os.environ["ACCESS_TOKEN_EXPIRY_IN_MINS"])
 )
 UPLOADED_IMAGES_DEST = os.path.join("static", "images")
+MAX_CONTENT_LENGTH = int(os.environ["MAX_CONTENT_LENGTH"])
