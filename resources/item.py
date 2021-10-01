@@ -84,7 +84,7 @@ class ItemList(Resource):
         unless the user has logged in.
         """
         user_id = get_jwt_identity()
-        items = [item_list_schema.dump(ItemModel.find_all())]
+        items = item_list_schema.dump(ItemModel.find_all())
         if user_id:
             return {"items": items}, 200
         return (
