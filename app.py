@@ -1,8 +1,10 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, make_response
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
 import os
+import json
+from simplexml import dumps
 
 from blacklist import BLACKLIST
 from resources.user import (
@@ -147,6 +149,20 @@ def revoked_token_callback(hdr, payload):
 @app.errorhandler(ValidationError)
 def handle_marshmallow_excep(err):
     return jsonify(err.messages), 400
+
+
+@api.representation("application/json")
+def output_json(data, code, headers=None):
+    resp = make_response(json.dumps({"response": data}), code)
+    resp.headers.extend(headers or {})
+    return resp
+
+
+@api.representation("application/xml")
+def output_xml(data, code, headers=None):
+    resp = make_response(dumps({"response": data}), code)
+    resp.headers.extend(headers or {})
+    return resp
 
 
 api.add_resource(Store, "/store/<string:name>")

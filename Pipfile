@@ -23,6 +23,7 @@ flask-reuploaded = "*"
 pytest = "*"
 pytest-sugar = "*"
 pytest-flask = "*"
+python-simplexml = "*"
 
 [dev-packages]
 black = "*"
